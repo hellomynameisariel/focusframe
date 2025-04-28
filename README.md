@@ -18,7 +18,7 @@ Built with Agile principles like timeboxing, iterative focus, and manageable spr
 
 ## Live Demo
 
-[Coming soon!] <!-- If you upload it to GitHub Pages later or CodePen, you can put a link here. -->
+[Try FocusFrame here!](https://hellomynameisariel.github.io/focusframe/focusframe.html)
 
 ## License
 

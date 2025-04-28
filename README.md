@@ -4,6 +4,10 @@
 
 Originally created to help an overwhelmed team member break down an insurmountable to-do list, FocusFrame uses timeboxing principles to turn big tasks into approachable wins.
 
+## Demo
+
+![FocusFrame Screenshot](screenshot.png)
+
 ## Features
 
 - Hourly task layout broken into four 15-minute sprints

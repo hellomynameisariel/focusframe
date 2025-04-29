@@ -1,106 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th:nth-child(2) { background-color: #b3d9ff; }
-        th:nth-child(3) { background-color: #66b3ff; }
-        th:nth-child(4) { background-color: #3399ff; }
-        th:nth-child(5) { background-color: #0066ff; }
-
-        input[type="checkbox"]:checked + input[type="text"] {
-            text-decoration: line-through;
-        }
-
-        .footer-link {
-            font-size: 0.7em;
-            color: #888;
-            margin-top: 10px;
-            display: inline-block;
-        }
-
-        .footer-link a {
-            color: #888;
-            text-decoration: none;
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function addRow() {
-                const tableBody = document.querySelector('#timeTrackerTable tbody');
-                const newRow = document.createElement('tr');
-
-                const timeCell = document.createElement('td');
-                const timeInput = document.createElement('input');
-                timeInput.type = 'text';
-                timeCell.appendChild(timeInput);
-                newRow.appendChild(timeCell);
-
-                for (let i = 0; i < 4; i++) {
-                    const taskCell = document.createElement('td');
-                    const taskCheckbox = document.createElement('input');
-                    taskCheckbox.type = 'checkbox';
-                    const taskInput = document.createElement('input');
-                    taskInput.type = 'text';
-                    taskCell.appendChild(taskCheckbox);
-                    taskCell.appendChild(taskInput);
-                    newRow.appendChild(taskCell);
-                }
-
-                tableBody.appendChild(newRow);
-            }
-
-            const addButton = document.querySelector('button[onclick="addRow()"]');
-            addButton.onclick = function () {
-                addRow();
-            };
-        });
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FocusFrame - Task Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    th:nth-child(2) { background-color: #b3d9ff; }
+    th:nth-child(3) { background-color: #66b3ff; }
+    th:nth-child(4) { background-color: #3399ff; }
+    th:nth-child(5) { background-color: #0066ff; }
+    input[type="checkbox"]:checked + input[type="text"] {
+      text-decoration: line-through;
+    }
+    .footer-link {
+      font-size: 0.7em;
+      color: #888;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    .footer-link a {
+      color: #888;
+      text-decoration: none;
+    }
+    .controls {
+      margin-top: 10px;
+    }
+    #disclaimer {
+      font-size: 0.75em;
+      color: #888;
+      margin-top: 4px;
+    }
+  </style>
 </head>
 <body>
-    <h1>FocusFrame: it's just 15 minutes</h1>
-    <table id="timeTrackerTable">
-        <thead>
-            <tr>
-                <th>Hour</th>
-                <th>:00-:15</th>
-                <th>:15-:30</th>
-                <th>:30-:45</th>
-                <th>:45-:00</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><input type="text" placeholder="Enter time"></td>
-                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
-                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
-                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
-                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
-            </tr>
-        </tbody>
-    </table>
+  <h1>FocusFrame: it's just 15 minutes</h1>
+  <div id="disclaimer">Note: Content will not save if page is reloaded unless your browser supports local storage.</div>
+
+  <table id="timeTrackerTable">
+    <thead>
+      <tr>
+        <th>Hour</th>
+        <th>:00-:15</th>
+        <th>:15-:30</th>
+        <th>:30-:45</th>
+        <th>:45-:00</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="controls">
     <button onclick="addRow()">Add Time Slot</button>
-    <div class="footer-link">
-        <a href="https://hellomynameisariel.github.io/flowtools/" target="_blank">See All Flow Tools by Ariel</a>
-    </div>
+    <button onclick="clearStorage()">Clear All</button>
+  </div>
+
+  <div class="footer-link">
+    <a href="https://hellomynameisariel.github.io/flowtools/" target="_blank">See All Flow Tools by Ariel</a>
+  </div>
+
+  <script>
+    function saveTable() {
+      const rows = [];
+      document.querySelectorAll('#timeTrackerTable tbody tr').forEach(tr => {
+        const row = [];
+        tr.querySelectorAll('td').forEach(td => {
+          const inputs = td.querySelectorAll('input');
+          if (inputs.length === 1) {
+            row.push(inputs[0].value);
+          } else {
+            row.push({
+              checked: inputs[0].checked,
+              value: inputs[1].value
+            });
+          }
+        });
+        rows.push(row);
+      });
+      localStorage.setItem('focusFrameData', JSON.stringify(rows));
+    }
+
+    function loadTable() {
+      const data = JSON.parse(localStorage.getItem('focusFrameData') || '[]');
+      data.forEach(rowData => {
+        const tr = document.createElement('tr');
+        const timeTd = document.createElement('td');
+        const timeInput = document.createElement('input');
+        timeInput.type = 'text';
+        timeInput.value = rowData[0];
+        timeInput.addEventListener('input', saveTable);
+        timeTd.appendChild(timeInput);
+        tr.appendChild(timeTd);
+
+        for (let i = 1; i <= 4; i++) {
+          const cellData = rowData[i];
+          const td = document.createElement('td');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = cellData.checked;
+          checkbox.addEventListener('change', saveTable);
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = cellData.value;
+          input.addEventListener('input', saveTable);
+          td.appendChild(checkbox);
+          td.appendChild(input);
+          tr.appendChild(td);
+        }
+
+        document.querySelector('#timeTrackerTable tbody').appendChild(tr);
+      });
+
+      if (data.length === 0) addRow(); // Add initial row if empty
+    }
+
+    function addRow() {
+      const tr = document.createElement('tr');
+      const timeTd = document.createElement('td');
+      const timeInput = document.createElement('input');
+      timeInput.type = 'text';
+      timeInput.addEventListener('input', saveTable);
+      timeTd.appendChild(timeInput);
+      tr.appendChild(timeTd);
+
+      for (let i = 0; i < 4; i++) {
+        const td = document.createElement('td');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.addEventListener('change', saveTable);
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.addEventListener('input', saveTable);
+        td.appendChild(checkbox);
+        td.appendChild(input);
+        tr.appendChild(td);
+      }
+
+      document.querySelector('#timeTrackerTable tbody').appendChild(tr);
+      saveTable();
+    }
+
+    function clearStorage() {
+      if (confirm("Clear all saved time tracker data?")) {
+        localStorage.removeItem('focusFrameData');
+        document.querySelector('#timeTrackerTable tbody').innerHTML = '';
+        addRow();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadTable);
+  </script>
 </body>
 </html>

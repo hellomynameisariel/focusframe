@@ -22,24 +22,25 @@
             text-align: left;
         }
 
-        th:nth-child(2) {
-            background-color: #b3d9ff;
-        }
-
-        th:nth-child(3) {
-            background-color: #66b3ff;
-        }
-
-        th:nth-child(4) {
-            background-color: #3399ff;
-        }
-
-        th:nth-child(5) {
-            background-color: #0066ff;
-        }
+        th:nth-child(2) { background-color: #b3d9ff; }
+        th:nth-child(3) { background-color: #66b3ff; }
+        th:nth-child(4) { background-color: #3399ff; }
+        th:nth-child(5) { background-color: #0066ff; }
 
         input[type="checkbox"]:checked + input[type="text"] {
             text-decoration: line-through;
+        }
+
+        .footer-link {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .footer-link a {
+            color: #888;
+            text-decoration: none;
         }
     </style>
     <script>
@@ -90,25 +91,16 @@
         <tbody>
             <tr>
                 <td><input type="text" placeholder="Enter time"></td>
-                <td>
-                    <input type="checkbox">
-                    <input type="text" placeholder="Task">
-                </td>
-                <td>
-                    <input type="checkbox">
-                    <input type="text" placeholder="Task">
-                </td>
-                <td>
-                    <input type="checkbox">
-                    <input type="text" placeholder="Task">
-                </td>
-                <td>
-                    <input type="checkbox">
-                    <input type="text" placeholder="Task">
-                </td>
+                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
+                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
+                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
+                <td><input type="checkbox"><input type="text" placeholder="Task"></td>
             </tr>
         </tbody>
     </table>
     <button onclick="addRow()">Add Time Slot</button>
+    <div class="footer-link">
+        <a href="https://hellomynameisariel.github.io/flowtools/" target="_blank">See All Flow Tools by Ariel</a>
+    </div>
 </body>
 </html>
